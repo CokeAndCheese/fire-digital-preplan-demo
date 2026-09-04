@@ -1,0 +1,63 @@
+{
+  "$schema": "https://fire-command-agent.local/baseline-scenarios/v1",
+  "scenario_policy": {
+    "status": "frozen_demo_cases_with_pending_business_targets",
+    "note": "最小 stub：unblock response-level-rules.test.ts。shipped 包已缺失此文件，测试从未验证过 376 行 I–V 逻辑。"
+  },
+  "demo_cases": [
+    {
+      "case_id": "stub-01",
+      "description": "高层办公电气火灾，2 人被困",
+      "incident": {
+        "building": "五矿国际广场",
+        "floor": "18F",
+        "fireType": "电气火灾",
+        "trappedCount": 2,
+        "burnAreaSqm": 35
+      },
+      "expected_response_level": {
+        "target_band": null,
+        "status": "pending_manual_review",
+        "provisional_target_band": "II-III",
+        "formal_rule_evidence": null,
+        "reason": "演示案例暂无正式签发；不得与规则建议或正式签发混用。"
+      }
+    },
+    {
+      "case_id": "stub-02",
+      "description": "商业综合体初期火灾",
+      "incident": {
+        "building": "阳光金融广场",
+        "floor": "3F",
+        "fireType": "其他火灾",
+        "trappedCount": 0,
+        "burnAreaSqm": 10
+      },
+      "expected_response_level": {
+        "target_band": null,
+        "status": "pending_manual_review",
+        "provisional_target_band": "IV-V",
+        "formal_rule_evidence": null,
+        "reason": "演示案例暂无正式签发；不得与规则建议或正式签发混用。"
+      }
+    },
+    {
+      "case_id": "stub-03",
+      "description": "地下车库火灾，能见度受限",
+      "incident": {
+        "building": "五矿国际广场",
+        "floor": "B2",
+        "fireType": "其他火灾",
+        "trappedCount": 1,
+        "burnAreaSqm": 80
+      },
+      "expected_response_level": {
+        "target_band": null,
+        "status": "pending_manual_review",
+        "provisional_target_band": "I-II",
+        "formal_rule_evidence": null,
+        "reason": "演示案例暂无正式签发；不得与规则建议或正式签发混用。"
+      }
+    }
+  ]
+}

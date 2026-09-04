@@ -1,0 +1,23 @@
+{
+  "recordVersion": "rollback-record/v1",
+  "status": "PENDING",
+  "incidentId": null,
+  "deployment": {
+    "baseUrl": null,
+    "fromVersion": null,
+    "toVersion": null,
+    "healthCheck": "PENDING"
+  },
+  "trigger": null,
+  "evidenceRefs": [],
+  "decision": "PENDING_MANUAL_REVIEW",
+  "approvedBy": null,
+  "startedAt": null,
+  "finishedAt": null,
+  "verification": {
+    "fixedCaseRetest": "PENDING",
+    "browserConsole": "PENDING",
+    "wordArchive": "PENDING"
+  },
+  "notes": "不得用回滚后的离线演示或旧回执宣称恢复成功。"
+}

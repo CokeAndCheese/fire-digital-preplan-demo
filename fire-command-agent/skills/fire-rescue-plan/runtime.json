@@ -1,0 +1,36 @@
+{
+  "id": "rescue-plan",
+  "packageName": "fire-rescue-plan",
+  "name": "结构化预案与签发引擎",
+  "shortName": "预案 JSON",
+  "description": "汇总四类基础 Skill 结果，生成结构化预案 JSON，并进入人工复核、Word 导出与版本签发流程。",
+  "targetProject": "结构化预案 JSON / Word 版本签发",
+  "role": "orchestration",
+  "order": 5,
+  "inputs": ["空间定位", "等级判定", "力量匹配"],
+  "output": "可复核预案 JSON 与签发版本",
+  "endpointEnv": "RESCUE_PLAN_URL",
+  "actions": [
+    {
+      "id": "generate_plan",
+      "name": "生成预案草案",
+      "description": "汇总火情和基础 Skill 结果，生成可复核的结构化预案 JSON。",
+      "requiresApproval": false,
+      "inputExample": { "building": "五矿国际广场", "floor": "8F", "room": "808", "fireType": "电气火灾", "trappedCount": 2, "burnArea": 35 }
+    },
+    {
+      "id": "query_plan",
+      "name": "查询历史预案",
+      "description": "按建筑、灾种或时间检索已归档预案。",
+      "requiresApproval": false,
+      "inputExample": { "building": "五矿国际广场", "limit": 5 }
+    },
+    {
+      "id": "publish_plan",
+      "name": "提交预案复核",
+      "description": "将人工复核后的预案提交 Word 导出与版本签发流程。",
+      "requiresApproval": true,
+      "inputExample": { "planId": "PLAN-DEMO-001", "reviewer": "值班指挥员" }
+    }
+  ]
+}

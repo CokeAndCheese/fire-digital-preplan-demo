@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-08-21T23:36:29+08:00",
+  "credentialPolicy": "No App Key, token, Authorization value, or complete request header is retained.",
+  "applicationReceipt": {
+    "endpoint": "GET /uagent-service/api/agent/v1/apps/{app_id}",
+    "httpStatus": 200,
+    "appId": "2090387120713011202",
+    "name": "三亚消防数字预案编制闭环智能体",
+    "status": "published",
+    "releaseVersion": "sha256:9e7df04c9eb6bba3cbc56f8eae74ce09254359ac6f40f6b5c7fde8e426d4dfdc",
+    "platformVersionId": "4",
+    "platformVersionLabel": "2026-08-20版本",
+    "publishedAt": "2026-08-20T19:43:26+08:00",
+    "publishedAtSource": "Authenticated uStudio console version-management page",
+    "observedCreatedAt": "2026-08-20T10:35:01.750Z",
+    "observedModifiedAt": "2026-08-20T11:43:25.930Z",
+    "publishedConfigurationEqualsDraft": true,
+    "bindings": {
+      "skillIds": ["skill_6e8c8d7a13104164"],
+      "mcpServerIds": ["2089512573002825730", "2088159958325714945"],
+      "knowledgeBaseIds": ["2086971423845441537", "2086725112508375041", "2086631862216495105"],
+      "knowledgeBaseDetails": [
+        { "id": "2086971423845441537", "name": "消防预案库", "versionLabel": "新版", "updatedAt": "2026-08-15T16:33:03+08:00", "itemCount": 32 },
+        { "id": "2086725112508375041", "name": "防火知识库1", "versionLabel": "新版", "updatedAt": "2026-08-11T09:23:44+08:00", "itemCount": 22 },
+        { "id": "2086631862216495105", "name": "消防救援规范1", "versionLabel": "新版", "updatedAt": "2026-08-11T10:42:43+08:00", "itemCount": 24 }
+      ],
+      "subAgents": [
+        { "appId": "2090400215879553026", "name": "五矿空间证据单次查询子智能体V2", "status": "published" },
+        { "appId": "2083076456743886850", "name": "火灾等级判定", "status": "published" },
+        { "appId": "2059171817222426626", "name": "消防救援助手智能体", "status": "published" }
+      ]
+    }
+  },
+  "smokeCallReceipt": {
+    "case": "binding acknowledgement only; no external action requested",
+    "endpoint": "POST /uagent-service/api/agent/v1/apps/agent-chat",
+    "httpStatus": 200,
+    "sseEventCount": 17,
+    "conversationId": "a10fa8773e414e4eab540021e82a4e70",
+    "result": "The remote MultiAgent acknowledged the audit and named three bound child capabilities. This is not a complete competition case."
+  },
+  "endToEndCaseReceipt": {
+    "caseId": "CASE-20260821-USTUDIO-01",
+    "input": {
+      "building": "五矿国际广场",
+      "floor": "8F",
+      "room": "808",
+      "fireType": "电气火灾",
+      "trappedCount": 2,
+      "burnAreaSqm": 35,
+      "requestedBoundary": "Generate a draft only; do not sign or start 3D simulation."
+    },
+    "endpoint": "POST /uagent-service/api/agent/v1/apps/agent-chat",
+    "httpStatus": 200,
+    "sseEventCount": 0,
+    "timeoutMs": 110000,
+    "result": "superseded_by_successful_retry",
+    "failureCode": "REMOTE_SSE_TIMEOUT",
+    "message": "Historical attempt. A later fixed-session retry completed successfully; see ustudio-case-receipt-CASE-20260821-USTUDIO-02.json."
+  },
+  "releaseGate": {
+    "status": "passed_console_evidence_server_api_limited",
+    "blockingChecks": [
+      "The server App Key cannot independently call the console version-history endpoint (401); the authenticated uStudio console supplied the version ID and publishedAt evidence.",
+      "Knowledge-base detail endpoints remain 401 for the server App Key; the authenticated uStudio console supplied the catalog names, version labels, timestamps, and item counts."
+    ],
+    "requiredExternalEvidence": [
+      "No further evidence is required for request 08; retain the authenticated-console observation and do not expose credentials."
+    ]
+  }
+}

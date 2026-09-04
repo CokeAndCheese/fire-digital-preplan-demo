@@ -1,0 +1,18 @@
+# Add this block before the gateway's root-index handler.
+# handle preserves the public prefix; both Next images are built with matching
+# basePath values. The scene block must remain first because it is more specific.
+
+redir /fire-digital-preplan-demo /fire-digital-preplan-demo/ 308
+redir /fire-digital-preplan-demo/scene /fire-digital-preplan-demo/scene/ 308
+
+handle /fire-digital-preplan-demo/scene/* {
+	reverse_proxy fire-digital-preplan-demo-scene:3000 {
+		flush_interval -1
+	}
+}
+
+handle /fire-digital-preplan-demo/* {
+	reverse_proxy fire-digital-preplan-demo:3100 {
+		flush_interval -1
+	}
+}

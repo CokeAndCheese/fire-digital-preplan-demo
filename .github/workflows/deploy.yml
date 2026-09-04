@@ -1,0 +1,95 @@
+name: Deploy fire-digital-preplan-demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fire-digital-preplan-demo-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      LIGHTHOUSE_HOST: ${{ vars.LIGHTHOUSE_HOST || '115.159.223.98' }}
+      LIGHTHOUSE_USER: ${{ vars.LIGHTHOUSE_USER || 'ubuntu' }}
+      PROJECT_SLUG: fire-digital-preplan-demo
+      TARGET_SHA: ${{ github.sha }}
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Build and verify full-history main bundle
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          [[ "$TARGET_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
+          git cat-file -e "${TARGET_SHA}^{commit}"
+          git update-ref refs/heads/main "$TARGET_SHA"
+          [[ "$(git rev-parse refs/heads/main^{commit})" == "$TARGET_SHA" ]]
+          BUNDLE_PATH="$RUNNER_TEMP/${PROJECT_SLUG}-${TARGET_SHA}.bundle"
+          git bundle create "$BUNDLE_PATH" refs/heads/main
+          git bundle verify "$BUNDLE_PATH"
+          echo "BUNDLE_PATH=$BUNDLE_PATH" >> "$GITHUB_ENV"
+
+      - name: Prepare pinned SSH trust and dedicated key
+        shell: bash
+        env:
+          DEPLOY_KEY: ${{ secrets.LIGHTHOUSE_DEPLOY_KEY }}
+          KNOWN_HOSTS: ${{ secrets.LIGHTHOUSE_KNOWN_HOSTS }}
+        run: |
+          set -Eeuo pipefail
+          test -n "$DEPLOY_KEY"
+          test -n "$KNOWN_HOSTS"
+          [[ "$LIGHTHOUSE_HOST" =~ ^[A-Za-z0-9.-]+$ ]]
+          [[ "$LIGHTHOUSE_USER" =~ ^[a-z_][a-z0-9_-]*$ ]]
+          SSH_DIR="$RUNNER_TEMP/fire-deploy-ssh"
+          install -d -m 700 "$SSH_DIR"
+          install -m 600 /dev/null "$SSH_DIR/id_ed25519"
+          install -m 600 /dev/null "$SSH_DIR/known_hosts"
+          printf '%s\n' "$DEPLOY_KEY" > "$SSH_DIR/id_ed25519"
+          printf '%s\n' "$KNOWN_HOSTS" > "$SSH_DIR/known_hosts"
+          ssh-keygen -F "$LIGHTHOUSE_HOST" -f "$SSH_DIR/known_hosts" >/dev/null
+          echo "SSH_DIR=$SSH_DIR" >> "$GITHUB_ENV"
+
+      - name: Upload bundle over pinned SSH
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          REMOTE_BUNDLE="/tmp/${PROJECT_SLUG}-${TARGET_SHA}.bundle"
+          scp -O -B -i "$SSH_DIR/id_ed25519" -o BatchMode=yes -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$SSH_DIR/known_hosts" \
+            "$BUNDLE_PATH" "${LIGHTHOUSE_USER}@${LIGHTHOUSE_HOST}:${REMOTE_BUNDLE}"
+          echo "REMOTE_BUNDLE=$REMOTE_BUNDLE" >> "$GITHUB_ENV"
+
+      - name: Deploy exact SHA with server-side rollback
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          [[ "$TARGET_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
+          ssh -i "$SSH_DIR/id_ed25519" -o BatchMode=yes -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$SSH_DIR/known_hosts" \
+            "${LIGHTHOUSE_USER}@${LIGHTHOUSE_HOST}" \
+            "deploy ${REMOTE_BUNDLE} ${TARGET_SHA}"
+
+      - name: Verify the public gateway from outside the server
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          main_body=$(curl --fail --silent --show-error --max-time 20 \
+            "http://${LIGHTHOUSE_HOST}/${PROJECT_SLUG}/health")
+          scene_body=$(curl --fail --silent --show-error --max-time 20 \
+            "http://${LIGHTHOUSE_HOST}/${PROJECT_SLUG}/scene/health")
+          grep -Fq '"service":"fire-command-agent"' <<<"$main_body"
+          grep -Fq '"service":"fire-scene-command-bridge"' <<<"$scene_body"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "消防空间定位与场景控制"
+  short_description: "连接 uStudio 空间图谱，定位空间并经复核执行场景控制与真实灾情推演"
+  default_prompt: "Use $fire-scene-control to locate a fire space and run an approved scene action."

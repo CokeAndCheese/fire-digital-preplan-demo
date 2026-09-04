@@ -1,0 +1,36 @@
+{
+  "id": "scene-control",
+  "packageName": "fire-scene-control",
+  "name": "空间定位 Skill",
+  "shortName": "空间定位",
+  "description": "从 uStudio 场景与空间图谱定位建筑、楼层、房间和防火分区，并把目标交给后续研判与推演。",
+  "targetProject": "uStudio 场景与空间图谱",
+  "role": "core",
+  "order": 1,
+  "inputs": ["建筑/楼层/房间", "报警位置", "空间图谱"],
+  "output": "空间对象与场景坐标",
+  "endpointEnv": "SCENE_CONTROL_URL",
+  "actions": [
+    {
+      "id": "locate_space",
+      "name": "定位并高亮空间",
+      "description": "定位到指定楼层、房间或防火分区并高亮。",
+      "requiresApproval": false,
+      "inputExample": { "floor": "1F", "room": "商铺1" }
+    },
+    {
+      "id": "set_view_mode",
+      "name": "切换二维/三维",
+      "description": "切换场景视图并保持当前空间选择。",
+      "requiresApproval": false,
+      "inputExample": { "mode": "3D" }
+    },
+    {
+      "id": "start_simulation",
+      "name": "启动灾情推演",
+      "description": "将已确认灾情参数发送到三维推演子项目。",
+      "requiresApproval": true,
+      "inputExample": { "floor": "8F", "room": "808", "fireType": "电气火灾", "level": "较大", "burnArea": 35, "trappedCount": 2 }
+    }
+  ]
+}

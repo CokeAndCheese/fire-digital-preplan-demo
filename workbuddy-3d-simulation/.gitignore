@@ -1,0 +1,15 @@
+.next
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# 凭据与运行产物：不得进入版本库 / 源码包
+.env.local
+.env
+.*.log
+.scene-dev.log
+release/
+.desktop/runtime/
+.data/

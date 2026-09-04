@@ -1,0 +1,13 @@
+.next/
+node_modules/
+.env.local
+coverage/
+output/
+*.tsbuildinfo
+
+# 凭据与运行产物：不得进入版本库 / 源码包
+.env
+.*.log
+.data/
+release/
+desktop/runtime/

@@ -1,0 +1,50 @@
+# Local secrets and deployment state
+.env
+.env.*
+!.env.example
+!.env.*.example
+.data/
+data/
+
+# JavaScript dependencies and build output
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+out/
+coverage/
+*.tsbuildinfo
+.qa/
+**/.qa/
+.claude/
+**/.claude/
+workbuddy-delivery/
+**/workbuddy-delivery/
+
+# Desktop runtime/release payloads are not server source
+desktop/runtime/
+desktop/generated-release/
+**/desktop/runtime/
+**/desktop/generated-release/
+
+# Local/editor/OS files
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Archives, executables, credentials and private key material
+*.exe
+*.msi
+*.dmg
+*.zip
+*.tar
+*.tgz
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+id_ed25519
+id_rsa
+known_hosts

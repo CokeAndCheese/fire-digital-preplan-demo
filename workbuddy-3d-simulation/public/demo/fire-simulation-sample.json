@@ -1,0 +1,20 @@
+{
+  "contractVersion": "1.0",
+  "eventId": "EVT-DEMO-11STEP",
+  "sceneId": "477747327523254272",
+  "title": "五矿国际广场 18 层三维推演（11 步）",
+  "createdAt": "2026-08-24T00:00:00.000Z",
+  "steps": [
+    { "id": "step-1", "order": 1, "code": "ALARM_RECEIVED", "title": "接收火情", "description": "载入事件编号和火情摘要。", "actions": [{ "type": "NOTE", "text": "已接收火情输入。" }] },
+    { "id": "step-2", "order": 2, "code": "LOCATE_FIRE_ROOM", "title": "锁定起火位置", "description": "镜头飞向并高亮起火空间。", "actions": [{ "type": "FOCUS_OBJECT", "objectId": "room_fire_src" }, { "type": "HIGHLIGHT_OBJECT", "objectId": "room_fire_src", "color": "#FF3B30" }] },
+    { "id": "step-3", "order": 3, "code": "ISOLATE_STORY_ZONE", "title": "锁定起火楼层", "description": "应用起火楼层图层。", "actions": [{ "type": "APPLY_LAYER", "stories": ["story_18"], "mode": "3D" }, { "type": "SHOW_POLYGON", "polygonId": "zone_story_18", "visible": true }] },
+    { "id": "step-4", "order": 4, "code": "ANALYZE_SPREAD", "title": "分析蔓延风险", "description": "记录相邻空间和蔓延风险研判。", "actions": [{ "type": "HIGHLIGHT_OBJECT", "objectId": "space_adjacent_01", "color": "#FFCC00" }] },
+    { "id": "step-5", "order": 5, "code": "SELECT_STAGING_ENTRY", "title": "选择停车点与入口", "description": "聚焦停车点、建筑入口。", "actions": [{ "type": "FOCUS_OBJECT", "objectId": "staging_point" }, { "type": "HIGHLIGHT_OBJECT", "objectId": "building_entry", "color": "#4C8DFF" }] },
+    { "id": "step-6", "order": 6, "code": "SELECT_WATER_SOURCE", "title": "水源部署", "description": "显示主、备水源及连接关系。", "actions": [{ "type": "SHOW_OBJECTS", "objectIds": ["hydrant_outdoor_01", "pump_connector_01"] }] },
+    { "id": "step-7", "order": 7, "code": "DRAW_PRIMARY_ROUTE", "title": "绘制主进攻路线", "description": "在模型中绘制主进攻路线。", "actions": [{ "type": "DRAW_ROUTE", "routeKey": "primary_route", "routeName": "主进攻路线", "color": "#2FD4BF", "points": [{ "x": 0, "y": 0, "z": 0 }, { "x": 12, "y": 6, "z": 0 }, { "x": 26, "y": 0, "z": 0 }] }] },
+    { "id": "step-8", "order": 8, "code": "DRAW_BACKUP_ROUTE", "title": "绘制备用路线", "description": "在模型中绘制疏散与备用路线。", "actions": [{ "type": "DRAW_ROUTE", "routeKey": "backup_route", "routeName": "备用路线", "color": "#28C76F", "points": [{ "x": 0, "y": 0, "z": 0 }, { "x": -9, "y": 5, "z": 0 }, { "x": -18, "y": 0, "z": 0 }] }] },
+    { "id": "step-9", "order": 9, "code": "SHOW_FORCE_DEPLOYMENT", "title": "力量部署", "description": "显示已匹配消防救援力量。", "actions": [{ "type": "SHOW_OBJECTS", "objectIds": ["station_01", "engine_01", "crew_01"] }] },
+    { "id": "step-10", "order": 10, "code": "PLAY_TIMELINE", "title": "时间轴同步推演", "description": "按步骤顺序同步镜头、对象与文字。", "actions": [{ "type": "NOTE", "text": "时间轴同步推进。" }, { "type": "FOCUS_OBJECT", "objectId": "room_fire_src" }] },
+    { "id": "step-11", "order": 11, "code": "REVIEW_SIGN_EXPORT", "title": "完成推演", "description": "三维推演完成，返回复核签发。", "actions": [{ "type": "NOTE", "text": "11 步三维推演完成。" }] }
+  ]
+}

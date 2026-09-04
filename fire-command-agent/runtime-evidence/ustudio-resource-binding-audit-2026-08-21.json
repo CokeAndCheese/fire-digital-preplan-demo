@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-08-21T23:36:29+08:00",
+  "credentialPolicy": "No credential or complete request header is retained.",
+  "skill": {
+    "id": "skill_6e8c8d7a13104164",
+    "name": "Structured JSON Reply",
+    "version": "v1.0.0",
+    "type": "builtin",
+    "enabled": true,
+    "createdAt": "2026-07-02T10:52:57.000Z",
+    "modifiedAt": "2026-07-02T10:52:57.000Z",
+    "endpoint": "GET /uagent-service/api/agent/v1/skills?current=1&size=100"
+  },
+  "mcpServers": [
+    {
+      "serverCode": "2089512573002825730",
+      "name": "测试1",
+      "status": 1,
+      "type": "CUSTOMER",
+      "modifiedAt": "2026-08-19T03:47:03.000Z",
+      "toolNames": ["get_fire_by_id", "get_fire_equipment_summary", "get_unit_by_id", "get_unit_by_name", "get_unit_plan", "list_fires", "list_unit_submissions", "list_units", "list_vehicles_by_type", "search_fires"]
+    },
+    {
+      "serverCode": "2088159958325714945",
+      "name": "联网搜索",
+      "status": 1,
+      "type": "CUSTOMER",
+      "modifiedAt": "2026-08-15T12:06:26.000Z",
+      "toolNames": ["bing_search", "crawl_webpage"]
+    }
+  ],
+  "knowledgeBases": {
+    "ids": ["2086971423845441537", "2086725112508375041", "2086631862216495105"],
+    "status": "bound_ids_and_catalog_details_observed_in_authenticated_console",
+    "consoleCatalog": [
+      { "id": "2086971423845441537", "name": "消防预案库", "versionLabel": "新版", "updatedAt": "2026-08-15T16:33:03+08:00", "itemCount": 32 },
+      { "id": "2086725112508375041", "name": "防火知识库1", "versionLabel": "新版", "updatedAt": "2026-08-11T09:23:44+08:00", "itemCount": 22 },
+      { "id": "2086631862216495105", "name": "消防救援规范1", "versionLabel": "新版", "updatedAt": "2026-08-11T10:42:43+08:00", "itemCount": 24 }
+    ],
+    "consoleSource": "Authenticated uStudio knowledge-base management page; read-only observation",
+    "detailEndpoint": "GET /uagent-service/console/v1/knowledge-bases/{kbId}",
+    "httpStatus": 401,
+    "missing": "The server App Key cannot call the detail endpoint; console catalog evidence is retained above."
+  },
+  "applicationVersions": {
+    "endpoint": "GET /uagent-service/console/v1/apps/{appId}/versions",
+    "httpStatus": 401,
+    "status": "version_history_server_api_unauthorized_console_verified",
+    "platformVersionId": "4",
+    "platformVersionLabel": "2026-08-20版本",
+    "publishedAt": "2026-08-20T19:43:26+08:00",
+    "consoleSource": "Authenticated uStudio application version-management page; 线上版本 / 最新",
+    "missing": "The server App Key cannot call the console version-history endpoint; console evidence is retained above."
+  }
+}

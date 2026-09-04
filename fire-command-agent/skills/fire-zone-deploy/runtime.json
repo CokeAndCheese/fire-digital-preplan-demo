@@ -1,0 +1,36 @@
+{
+  "id": "fire-zone-deploy",
+  "packageName": "fire-zone-deploy",
+  "name": "作战区域部署 Skill",
+  "shortName": "作战区域",
+  "description": "根据火情与火点场景坐标，自动生成作战区域（车辆停放区、登高作业面、器材摆放区、警戒区）与路线（进攻路线、着火层/上/下三层疏散路线），并在三维模型中可视化。",
+  "targetProject": "uStudio 三维场景 + 作战区域部署",
+  "role": "core",
+  "order": 6,
+  "inputs": ["火点/起火对象", "建筑与楼层", "接近/停车约束"],
+  "output": "作战区域与路线（含真实坐标与绘制命令）",
+  "endpointEnv": "SCENE_CONTROL_URL",
+  "actions": [
+    {
+      "id": "compute_zone_deploy",
+      "name": "计算作战区域（不绘制）",
+      "description": "按火点生成车辆停放区、登高作业面、器材摆放区、警戒区与进攻/三层疏散路线的坐标数据，不改变场景。",
+      "requiresApproval": false,
+      "inputExample": { "fireObjectId": "8d67b31b-bd25-4ed7-9d44-50497988cc64", "floor": "20F", "room": "机房1" }
+    },
+    {
+      "id": "deploy_zone",
+      "name": "生成并显示作战区域",
+      "description": "按火点生成车辆停放区、登高作业面、器材摆放区、警戒区与进攻/三层疏散路线并在三维显示。",
+      "requiresApproval": true,
+      "inputExample": { "fireObjectId": "8d67b31b-bd25-4ed7-9d44-50497988cc64", "floor": "20F", "room": "机房1", "cordonRadius": 60 }
+    },
+    {
+      "id": "clear_zone",
+      "name": "清除作战区域",
+      "description": "清除已生成的作战区域与路线显示。",
+      "requiresApproval": true,
+      "inputExample": { "fireObjectId": "8d67b31b-bd25-4ed7-9d44-50497988cc64" }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "competition-orchestrator",
+  "packageName": "fire-competition-orchestrator",
+  "name": "比赛全链路编排 Skill",
+  "shortName": "比赛编排",
+  "description": "把空间、等级、力量匹配和结构化预案编排为可复核的比赛闭环，并把8步三维推演置于人工复核之后。",
+  "targetProject": "UStudio 主智能体 / 独立指挥工作台",
+  "role": "orchestration",
+  "order": 6,
+  "inputs": ["火情要素", "场景定位", "等级依据", "核实力量"],
+  "output": "比赛闭环记录、预案草案与待复核动作",
+  "endpointEnv": "COMPETITION_ORCHESTRATOR_URL",
+  "actions": [
+    {
+      "id": "prepare_competition_run",
+      "name": "编排比赛闭环",
+      "description": "汇总五项基础能力的输入和证据，生成可复核的比赛预案草案与下一步清单。",
+      "requiresApproval": false,
+      "inputExample": { "building": "五矿国际广场", "floor": "1F", "room": "商铺1", "fireType": "电气火灾", "trappedCount": 2, "burnArea": 35 }
+    },
+    {
+      "id": "run_approved_demo",
+      "name": "启动已复核演示",
+      "description": "在指挥员复核后，下发8步三维推演和预案展示任务。",
+      "requiresApproval": true,
+      "inputExample": { "incidentId": "INC-DEMO-001", "planId": "PLAN-DEMO-001", "reviewer": "值班指挥员" }
+    }
+  ]
+}

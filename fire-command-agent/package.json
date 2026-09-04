@@ -1,0 +1,82 @@
+{
+  "name": "fire-command-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "dev": "next dev -p 3100",
+    "build": "next build",
+    "start": "next start -p 3100",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "desktop:test": "node --test desktop/__tests__/*.test.mjs",
+    "desktop:preflight": "node desktop/build.mjs --preflight",
+    "desktop:build": "node desktop/build.mjs",
+    "desktop:pack": "node desktop/build.mjs --pack",
+    "desktop:dist": "node desktop/build.mjs --dist"
+  },
+  "dependencies": {
+    "@assistant-ui/react": "^0.15.15",
+    "@assistant-ui/react-markdown": "^0.14.11",
+    "@mantine/core": "^9.5.1",
+    "@mantine/hooks": "^9.5.1",
+    "jszip": "^3.10.1",
+    "lucide-react": "^0.468.0",
+    "next": "^16.2.9",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "remark-gfm": "^4.0.1",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "electron": "^44.1.0",
+    "electron-builder": "^26.0.12",
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.4"
+  },
+  "build": {
+    "appId": "com.xwbuilders.fire-command-agent",
+    "productName": "消防指挥智能体",
+    "artifactName": "消防指挥智能体-${version}-${arch}.${ext}",
+    "asar": true,
+    "directories": {
+      "output": "desktop/generated-release"
+    },
+    "files": [
+      "desktop/main.cjs",
+      "desktop/health-check.cjs",
+      "desktop/preload.cjs",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "desktop/runtime",
+        "to": "apps"
+      }
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "desktop/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "消防指挥智能体"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fire resource dispatch actions",
+  "oneOf": [
+    {
+      "properties": {
+        "action": { "const": "query_nearby_units" },
+        "input": {
+          "type": "object",
+          "properties": {
+            "address": { "type": "string" },
+            "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+            "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+            "radiusKm": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 }
+          },
+          "anyOf": [
+            { "required": ["address"] },
+            { "required": ["longitude", "latitude"] }
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    },
+    {
+      "properties": {
+        "action": { "const": "get_unit_contact" },
+        "input": {
+          "type": "object",
+          "properties": { "unitId": { "type": "string", "minLength": 1 } },
+          "required": ["unitId"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    },
+    {
+      "properties": {
+        "action": { "const": "dispatch_recommendation" },
+        "input": {
+          "type": "object",
+          "properties": {
+            "level": { "type": "string" },
+            "sceneType": { "type": "string" },
+            "verifiedUnitIds": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          },
+          "required": ["level", "sceneType", "verifiedUnitIds"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    }
+  ]
+}

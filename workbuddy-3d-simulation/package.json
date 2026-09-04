@@ -1,0 +1,48 @@
+{
+  "name": "jarvis-ustudio-scene",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@assistant-ui/react": "^0.15.15",
+    "@assistant-ui/react-markdown": "^0.14.11",
+    "@dt-uagent/multi-agent-sdk": "^1.0.12",
+    "@soonspacejs/plugin-atmosphere": "2.15.17",
+    "@soonspacejs/plugin-cps-soonmanager": "2.15.17",
+    "@soonspacejs/plugin-effect": "2.15.17",
+    "@soonspacejs/plugin-fds": "2.15.17",
+    "@soonspacejs/plugin-flow": "2.15.17",
+    "@soonspacejs/plugin-gs3d-loader": "2.15.17",
+    "@soonspacejs/plugin-poi-renderer": "2.15.17",
+    "@soonspacejs/plugin-tiles": "2.15.17",
+    "camera-controls": "^3.1.2",
+    "hls.js": "^1.6.16",
+    "lucide-react": "^0.468.0",
+    "mpegts.js": "^1.8.0",
+    "next": "^16.2.9",
+    "postprocessing": "^6.39.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "soonspacejs": "2.15.17",
+    "three": "^0.183.2",
+    "three-mesh-bvh": "^0.9.9",
+    "umanager-animation-parser": "^0.0.6",
+    "ustudio-sdk": "2.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.183.0",
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,0 +1,103 @@
+name: fire-digital-preplan-demo
+
+services:
+  fire:
+    image: fire-digital-preplan-demo:latest
+    container_name: fire-digital-preplan-demo
+    build:
+      context: .
+      dockerfile: fire-command-agent/Dockerfile
+      args:
+        NEXT_PUBLIC_BASE_PATH: ${FIRE_BASE_PATH:-/fire-digital-preplan-demo}
+        NEXT_PUBLIC_SCENE_URL: ${FIRE_PUBLIC_SCENE_URL:-/fire-digital-preplan-demo/scene}
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: "3100"
+      NEXT_PUBLIC_BASE_PATH: ${FIRE_BASE_PATH:-/fire-digital-preplan-demo}
+      NEXT_PUBLIC_SCENE_URL: ${FIRE_PUBLIC_SCENE_URL:-/fire-digital-preplan-demo/scene}
+      AGENT_RUNTIME_MODE: ${AGENT_RUNTIME_MODE:-remote}
+      AGENT_GATEWAY: ${AGENT_GATEWAY:-https://fc.xwbuilders.com}
+      AGENT_APP_KEY: ${AGENT_APP_KEY:-}
+      AGENT_COMPETITION_APP_ID: ${AGENT_COMPETITION_APP_ID:-}
+      AGENT_STREAM_TIMEOUT_MS: ${AGENT_STREAM_TIMEOUT_MS:-90000}
+      AGENT_GATEWAY_TIMEOUT_MS: ${AGENT_GATEWAY_TIMEOUT_MS:-12000}
+      SCENE_CONTROL_URL: http://fire-digital-preplan-demo-scene:3000${SCENE_BASE_PATH:-/fire-digital-preplan-demo/scene}
+      ROUTE_WATER_URL: http://fire-digital-preplan-demo-scene:3000${SCENE_BASE_PATH:-/fire-digital-preplan-demo/scene}/api/skill-bridge/route-water
+      RESPONSE_LEVEL_URL: ${RESPONSE_LEVEL_URL:-}
+      RESCUE_PLAN_URL: ${RESCUE_PLAN_URL:-}
+      COMPETITION_ORCHESTRATOR_URL: ${COMPETITION_ORCHESTRATOR_URL:-}
+      FIRE_RESOURCE_PLATFORM_URL: ${FIRE_RESOURCE_PLATFORM_URL:-https://platform.sanya119.online}
+      SKILL_BRIDGE_TOKEN: ${SKILL_BRIDGE_TOKEN:-}
+      FIRE_COMMAND_AGENT_URL: http://fire-digital-preplan-demo:3100${FIRE_BASE_PATH:-/fire-digital-preplan-demo}
+      PLAN_TEMPLATE_KB_URL: ${PLAN_TEMPLATE_KB_URL:-}
+      PLAN_TEMPLATE_KB_TOKEN: ${PLAN_TEMPLATE_KB_TOKEN:-}
+      FIRE_PLAN_STORAGE_PATH: /app/data/fire/plans.json
+      FIRE_PLAN_TEMPLATE_PATH: ${FIRE_PLAN_TEMPLATE_PATH:-}
+      FIRE_PLAN_EXPORT_DIR: /app/data/fire/exports
+      FIRE_PLAN_API_TOKEN: ${FIRE_PLAN_API_TOKEN:-}
+    volumes:
+      - ./data/fire:/app/data/fire
+    networks:
+      - web
+    depends_on:
+      scene:
+        condition: service_healthy
+    restart: unless-stopped
+    stop_grace_period: 30s
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/fire-command-agent/.next/cache:uid=1001,gid=1001,mode=0750
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 1536m
+
+  scene:
+    image: fire-digital-preplan-demo-scene:latest
+    container_name: fire-digital-preplan-demo-scene
+    build:
+      context: .
+      dockerfile: workbuddy-3d-simulation/Dockerfile
+      args:
+        NEXT_PUBLIC_BASE_PATH: ${SCENE_BASE_PATH:-/fire-digital-preplan-demo/scene}
+        NEXT_PUBLIC_DEFAULT_SCENE_ID: ${NEXT_PUBLIC_DEFAULT_SCENE_ID:-477747327523254272}
+        NEXT_PUBLIC_JARVIS_WORKSPACE_ID: ${NEXT_PUBLIC_JARVIS_WORKSPACE_ID:-}
+        NEXT_PUBLIC_LOCALE: ${NEXT_PUBLIC_LOCALE:-zh}
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+      NEXT_PUBLIC_BASE_PATH: ${SCENE_BASE_PATH:-/fire-digital-preplan-demo/scene}
+      NEXT_PUBLIC_DEFAULT_SCENE_ID: ${NEXT_PUBLIC_DEFAULT_SCENE_ID:-477747327523254272}
+      NEXT_PUBLIC_JARVIS_WORKSPACE_ID: ${NEXT_PUBLIC_JARVIS_WORKSPACE_ID:-}
+      NEXT_PUBLIC_LOCALE: ${NEXT_PUBLIC_LOCALE:-zh}
+      X_APP_KEY: ${X_APP_KEY:-}
+      USTUDIO_GATEWAY: ${USTUDIO_GATEWAY:-https://fc.xwbuilders.com}
+      USTUDIO_HTTP_BASE_URL: ${USTUDIO_HTTP_BASE_URL:-}
+      USTUDIO_ASSET_BASE_URL: ${USTUDIO_ASSET_BASE_URL:-}
+      AGENT_GATEWAY: ${AGENT_GATEWAY:-https://fc.xwbuilders.com}
+    networks:
+      - web
+    restart: unless-stopped
+    stop_grace_period: 30s
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache:uid=1001,gid=1001,mode=0750
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 2048m
+
+networks:
+  web:
+    name: web
+    external: true

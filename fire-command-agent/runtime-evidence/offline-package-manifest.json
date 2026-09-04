@@ -1,0 +1,14 @@
+{
+  "manifestVersion": "offline-package/v1",
+  "status": "PENDING",
+  "scope": "可选的打包交付；不阻断从源码启动的本地比赛展示",
+  "reason": "未发现可运行、可校验且与固定案例绑定的离线数据包；禁止用截图、旧回执或 mock 数据代替。",
+  "requiredEntries": [
+    { "path": "README.md", "status": "PENDING" },
+    { "path": "fire-command-agent-build.tar.gz", "status": "PENDING" },
+    { "path": "scenario-cases.json", "status": "PENDING" },
+    { "path": "verification/sha256sums.txt", "status": "PENDING" },
+    { "path": "verification/frozen-case-retest.json", "status": "PENDING" }
+  ],
+  "releaseRule": "任何缺失或无法启动的条目都保持 PENDING；该清单只决定可选打包交付，不妨碍受控环境从源码开展预演，但不会使整体状态超越 REQUIRES_PREFLIGHT，也不能把离线演示当作远端实时发布。"
+}

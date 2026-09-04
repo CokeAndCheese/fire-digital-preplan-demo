@@ -1,0 +1,36 @@
+{
+  "id": "route-water",
+  "packageName": "fire-route-water",
+  "name": "路线水源 Skill",
+  "shortName": "路线水源",
+  "description": "按起火点坐标检索周边市政消火栓，以距离优先排序，并回传数据覆盖率与质量告警。源数据缺口显式呈现，不做地理编码回填，不生成自动取水结论。",
+  "targetProject": "三亚市消防救援力量与重点单位信息平台",
+  "role": "core",
+  "order": 3,
+  "inputs": ["起火点坐标", "检索半径", "返回条数"],
+  "output": "按距离排序的水源清单与数据质量报告",
+  "endpointEnv": "FIRE_RESOURCE_PLATFORM_URL",
+  "actions": [
+    {
+      "id": "query_nearby_water_sources",
+      "name": "检索周边水源",
+      "description": "按起火点经纬度检索半径内市政消火栓，按直线距离升序返回，标注可用性与数据缺口。",
+      "requiresApproval": false,
+      "inputExample": { "longitude": 109.504601, "latitude": 18.267177, "radiusKm": 3, "limit": 10 }
+    },
+    {
+      "id": "get_water_source_coverage",
+      "name": "查询水源数据覆盖率",
+      "description": "返回水源台账的清洗统计：可用记录数、无坐标数、越界数、坐标重合组数与供水能力字段可用性。",
+      "requiresApproval": false,
+      "inputExample": {}
+    },
+    {
+      "id": "query_route_constraints",
+      "name": "查询路线约束与实时态势",
+      "description": "读取平台实时天气、城市路况与水库水位。拥堵路段用于否定进攻路线，不产出行车时间。",
+      "requiresApproval": false,
+      "inputExample": {}
+    }
+  ]
+}

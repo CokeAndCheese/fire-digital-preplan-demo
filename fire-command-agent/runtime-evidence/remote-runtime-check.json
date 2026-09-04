@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "remote-runtime-check/v1",
+  "checkedAt": "2026-08-22T13:14:40+08:00",
+  "localBaseUrl": "http://localhost:3100",
+  "runtimeMode": "remote",
+  "app": {
+    "appId": "2090387120713011202",
+    "name": "三亚消防数字预案编制闭环智能体",
+    "status": "published",
+    "runtimeStatus": "ready"
+  },
+  "bindingChecks": {
+    "publishedApp": true,
+    "publishedVersion": true,
+    "skills": true,
+    "mcpServers": true,
+    "knowledgeBaseIds": true,
+    "subAgents": true,
+    "knowledgeBaseDetailAuthorization": false,
+    "knowledgeBaseDetailAuthorizationNote": "服务端凭证无法读取控制台详情；使用已发布绑定和认证控制台证据，未伪造为全量权限通过。"
+  },
+  "agentChat": {
+    "httpStatus": 200,
+    "transport": "server-sent-events",
+    "conversationId": "codex-remote-check-20260822c",
+    "observedRemoteAgents": ["MultiAgent"],
+    "observedRemoteTools": ["getSkillDetail"],
+    "requestedBoundary": "生成结构化预案草稿；不签发；不启动三维推演",
+    "result": "remote_stream_received"
+  },
+  "localSkillDirectExecution": {
+    "endpoint": "/api/skills/execute",
+    "httpStatus": 409,
+    "result": "blocked_in_remote_mode_use_agent_chat"
+  },
+  "truthRule": "本地程序是展示壳；业务结果必须来自八维通远端运行时。"
+}

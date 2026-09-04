@@ -1,0 +1,36 @@
+{
+  "id": "fire-resource",
+  "packageName": "fire-resource-dispatch",
+  "name": "力量匹配 Skill",
+  "shortName": "力量匹配",
+  "description": "直读三亚市消防救援力量与重点单位信息平台的登记队站、人员、装备、车辆和联络字段，形成可追溯的力量核验结果。",
+  "targetProject": "三亚市消防救援力量与重点单位信息平台",
+  "role": "core",
+  "order": 4,
+  "inputs": ["灾情等级", "场所类型", "可用力量"],
+  "output": "力量编成与调度建议",
+  "endpointEnv": "FIRE_RESOURCE_PLATFORM_URL",
+  "actions": [
+    {
+      "id": "query_nearby_units",
+      "name": "查询附近消防力量",
+      "description": "按事件地址或坐标查询消防单位及可用力量。",
+      "requiresApproval": false,
+      "inputExample": { "address": "三亚市吉阳区", "radiusKm": 10 }
+    },
+    {
+      "id": "get_unit_contact",
+      "name": "获取单位联络信息",
+      "description": "返回来源平台登记的单位值班联络信息。",
+      "requiresApproval": false,
+      "inputExample": { "unitId": "待从力量平台查询" }
+    },
+    {
+      "id": "dispatch_recommendation",
+      "name": "生成力量调度建议",
+      "description": "根据已核实的灾情、距离和装备形成调度组合。",
+      "requiresApproval": true,
+      "inputExample": { "level": "较大", "sceneType": "高层公共建筑", "verifiedUnitIds": [] }
+    }
+  ]
+}

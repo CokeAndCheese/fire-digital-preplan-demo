@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fire competition orchestrator actions",
+  "oneOf": [
+    {
+      "properties": {
+        "action": { "const": "prepare_competition_run" },
+        "input": {
+          "type": "object",
+          "properties": {
+            "sceneId": { "type": "string", "minLength": 1 },
+            "building": { "type": "string", "minLength": 1 },
+            "floor": { "type": "string" },
+            "room": { "type": "string" },
+            "fireType": { "type": "string", "minLength": 1 },
+            "trappedCount": { "type": "integer", "minimum": 0 },
+            "burnArea": { "type": "number", "minimum": 0 }
+          },
+          "required": ["sceneId", "building", "fireType"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    },
+    {
+      "properties": {
+        "action": { "const": "run_approved_demo" },
+        "input": {
+          "type": "object",
+          "properties": {
+            "incidentId": { "type": "string", "minLength": 1 },
+            "sceneId": { "type": "string", "minLength": 1 },
+            "planId": { "type": "string", "minLength": 1 },
+            "reviewer": { "type": "string", "minLength": 1 }
+          },
+          "required": ["incidentId", "sceneId", "planId", "reviewer"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    }
+  ]
+}

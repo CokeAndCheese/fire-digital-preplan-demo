@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fire response level actions",
+  "description": "All automatic level proposals require a fully traceable incident evidence package. The response is never a formally issued level.",
+  "oneOf": [
+    {
+      "properties": {
+        "action": { "const": "assess_response_level" },
+        "input": {
+          "type": "object",
+          "properties": { "incident": { "$ref": "#/$defs/incident" } },
+          "required": ["incident"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    },
+    {
+      "properties": {
+        "action": { "const": "explain_level_basis" },
+        "input": {
+          "type": "object",
+          "properties": { "assessmentId": { "type": "string", "minLength": 1 } },
+          "required": ["assessmentId"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    },
+    {
+      "properties": {
+        "action": { "const": "submit_level_review" },
+        "input": {
+          "type": "object",
+          "properties": {
+            "assessmentId": { "type": "string", "minLength": 1 },
+            "reviewer": { "type": "string", "minLength": 1 }
+          },
+          "required": ["assessmentId", "reviewer"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    }
+  ],
+  "$defs": {
+    "source": {
+      "type": "object",
+      "properties": {
+        "sourceId": { "type": ["string", "null"] },
+        "sourceType": { "enum": ["caller_report", "dispatch_system", "scene_model", "manual", "external_system", "not_collected"] },
+        "collectedAt": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "required": ["sourceId", "sourceType", "collectedAt"],
+      "additionalProperties": false
+    },
+    "evidenceField": {
+      "type": "object",
+      "properties": {
+        "value": {},
+        "status": { "enum": ["reported", "not_observed", "missing", "conflict"] },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "collectedAt": { "type": ["string", "null"], "format": "date-time" },
+        "manuallyConfirmed": { "type": "boolean" },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": { "value": {}, "sourceId": { "type": ["string", "null"] } },
+            "required": ["value"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["value", "status", "source", "confidence", "collectedAt", "manuallyConfirmed"],
+      "additionalProperties": false
+    },
+    "incident": {
+      "type": "object",
+      "properties": {
+        "incidentId": { "type": "string", "minLength": 1 },
+        "receivedAt": { "type": "string", "format": "date-time" },
+        "building": { "$ref": "#/$defs/evidenceField" },
+        "floor": { "$ref": "#/$defs/evidenceField" },
+        "room": { "$ref": "#/$defs/evidenceField" },
+        "firePartition": { "$ref": "#/$defs/evidenceField" },
+        "venueType": { "$ref": "#/$defs/evidenceField" },
+        "fireMaterialOrType": { "$ref": "#/$defs/evidenceField" },
+        "burnAreaSqm": { "$ref": "#/$defs/evidenceField" },
+        "spreadTrend": { "$ref": "#/$defs/evidenceField" },
+        "trappedCount": { "$ref": "#/$defs/evidenceField" },
+        "casualtyCount": { "$ref": "#/$defs/evidenceField" },
+        "missingPersonCount": { "$ref": "#/$defs/evidenceField" },
+        "specialHazards": { "$ref": "#/$defs/evidenceField" },
+        "facilityStatus": { "$ref": "#/$defs/evidenceField" },
+        "weatherConstraints": { "$ref": "#/$defs/evidenceField" },
+        "roadConstraints": { "$ref": "#/$defs/evidenceField" }
+      },
+      "required": [
+        "incidentId", "receivedAt", "building", "floor", "room", "firePartition", "venueType", "fireMaterialOrType",
+        "burnAreaSqm", "spreadTrend", "trappedCount", "casualtyCount", "missingPersonCount", "specialHazards",
+        "facilityStatus", "weatherConstraints", "roadConstraints"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

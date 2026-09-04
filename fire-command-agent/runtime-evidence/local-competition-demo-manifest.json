@@ -1,0 +1,68 @@
+{
+  "manifestVersion": "local-competition-demo/v1",
+  "status": "REQUIRES_PREFLIGHT",
+  "statusAsOf": "2026-09-01",
+  "statusReason": "真实 WebGL/SDK、三个固定案例实时回执及新 x64 候选包的 Windows 现场验证尚未闭环。",
+  "purpose": "比赛现场本地启动展示八维通远端数字预案编制闭环（依赖远端且须经现场预演）",
+  "canonicalSceneId": "477747327523254272",
+  "runtime": {
+    "mode": "remote",
+    "displayLabel": "本地展示 / 八维通远端业务",
+    "baseUrl": "http://localhost:3100",
+    "requiresPublicDeployment": false,
+    "representsRemoteRealtimeState": false,
+    "requiresLiveReceiptForRealtimeClaim": true,
+    "localShellOnly": true
+  },
+  "referenceInputs": [
+    {
+      "path": "baseline/scenario-cases.json",
+      "sha256": "c14639097193bed93a2cb1612e013c064a687f52c85c52ca290c065667346d09"
+    }
+  ],
+  "capabilities": [
+    "ai-intake",
+    "skill-orchestration",
+    "knowledge-evidence",
+    "business-agent-workflow",
+    "human-review",
+    "scene-process-display",
+    "audit-archive"
+  ],
+  "truthRules": [
+    "本地展示壳必须显示八维通远端运行状态和来源",
+    "不得把本地诊断结果标记为远端实时成功",
+    "失败和待人工复核状态必须保留"
+  ],
+  "historicalVerification": {
+    "verifiedAt": "2026-08-22T03:01:53+08:00",
+    "recordedStatus": "READY_FOR_LOCAL_DEMO",
+    "usage": "历史构建检查记录，不替代当前现场预演、实时回执或正式验收。",
+    "typecheck": "passed",
+    "tests": "13 files / 72 tests passed",
+    "build": "passed",
+    "manifestJson": "passed"
+  },
+  "currentVerification": {
+    "fireCommandAgent": "32 files / 238 tests passed; typecheck/build passed",
+    "workbuddy3dSimulation": "15 files / 132 tests passed; typecheck/build passed",
+    "desktopHealthChecks": "4 tests passed",
+    "verifiedAt": "2026-09-01"
+  },
+  "currentPreflight": {
+    "status": "REQUIRES_PREFLIGHT",
+    "blockingEvidence": [
+      "release-gate-failure-matrix-2026-08-22.json: BLOCKED",
+      "offline-package-manifest.json: PENDING",
+      "deployment-address.md: PENDING",
+      "three fixed-case records dated 2026-08-22: BLOCKED"
+    ],
+    "notClaimed": [
+      "offline_ready",
+      "formal_acceptance",
+      "three_fixed_cases_passed",
+      "real_webgl_sdk_e2e_verified",
+      "sanitized_windows_installer_verified"
+    ]
+  }
+}

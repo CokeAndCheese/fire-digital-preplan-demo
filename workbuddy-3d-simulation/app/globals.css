@@ -1,0 +1,798 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #0d1117;
+  color: #e5e7eb;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+.previewServerFallback {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: #d8dddc;
+  color: #dbeafe;
+}
+
+.previewServerFallback__panel {
+  width: min(360px, calc(100vw - 48px));
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.78);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.22);
+}
+
+.previewServerFallback__title {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.previewServerFallback__detail {
+  margin-top: 8px;
+  color: #93c5fd;
+  font-size: 12px;
+}
+
+.previewServerFallback__bar {
+  height: 4px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.22);
+}
+
+.previewServerFallback__bar span {
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #38bdf8, #34d399);
+  animation: previewServerFallbackSweep 1.2s ease-in-out infinite;
+}
+
+@keyframes previewServerFallbackSweep {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(260%); }
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+@keyframes ma-slide-in {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ───────────────────────── 多智能体浮窗（.ma-*） ───────────────────────── */
+
+@keyframes ma-spin { to { transform: rotate(360deg); } }
+.ma-spin { animation: ma-spin 0.9s linear infinite; }
+
+.ma-fab {
+  position: fixed;
+  z-index: 1499;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 9999px;
+  border: 1px solid rgba(64, 150, 255, 0.45);
+  background: linear-gradient(135deg, rgba(22, 119, 255, 0.45), rgba(64, 150, 255, 0.45));
+  box-shadow: 0 0 24px rgba(64, 150, 255, 0.45);
+  color: #e6f4ff;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: transform 0.2s ease;
+}
+.ma-fab:hover { transform: scale(1.05); }
+.ma-fab--dragging { cursor: grabbing; transform: scale(1.05); transition: none; }
+.ma-fab-icon { pointer-events: none; }
+
+.ma-panel {
+  position: fixed;
+  top: 16px;
+  bottom: 16px;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(64, 150, 255, 0.3);
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.96) 0%, rgba(13, 17, 23, 0.96) 100%);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+  color: #e5e7eb;
+  animation: ma-slide-in 0.2s ease;
+}
+
+.ma-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+  flex-shrink: 0;
+}
+.ma-panel-title { font-size: 14px; font-weight: 600; color: #f1f5f9; }
+
+.ma-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ma-sdk-mount {
+  width: 100%;
+  height: 100%;
+}
+
+/* SDK 内部弹窗 z-index 提到面板之上 */
+.ma-panel [class*="ant-pop"] {
+  z-index: 10000 !important;
+}
+
+/* ───── 多智能体聊天框：对 SDK(第三方 bundle) 的样式覆盖 ─────
+   SDK 内部用 CSS-module 哈希类名（每次重打包哈希后缀会变），故用 [class*="_模块名__"] 子串选择器命中，
+   不依赖具体哈希；全部限定在 .ma-panel 作用域内，避免影响宿主应用其它部分。 */
+
+/* 字体：正文统一无衬线；行内代码/长数字 ID 用等宽 + 浅紫底 chip */
+.ma-panel,
+.ma-panel input,
+.ma-panel textarea,
+.ma-panel button,
+.ma-panel [class*="_messageBubble__"] {
+  font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.ma-panel code,
+.ma-panel kbd,
+.ma-panel pre {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Liberation Mono", monospace;
+}
+.ma-panel :not(pre) > code {
+  background: rgba(167, 139, 250, 0.16);
+  color: #c4b5fd;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-size: 0.88em;
+}
+
+/* 滚动条 */
+.ma-panel ::-webkit-scrollbar { width: 8px; height: 8px; }
+.ma-panel ::-webkit-scrollbar-track { background: transparent; }
+.ma-panel ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.28);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.ma-panel ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.5); background-clip: padding-box; }
+.ma-panel * { scrollbar-width: thin; scrollbar-color: rgba(148, 163, 184, 0.32) transparent; }
+
+/* 间距 */
+.ma-panel [class*="_messageList__"] { gap: 6px; padding: 14px 18px; }
+.ma-panel [class*="_messageArea__"] { line-height: 1.5; }
+.ma-panel [class*="_messageArea__"] p { margin: 0 0 4px !important; }
+.ma-panel [class*="_messageArea__"] p:last-child { margin-bottom: 0 !important; }
+.ma-panel [class*="_messageArea__"] ul,
+.ma-panel [class*="_messageArea__"] ol { margin: 4px 0 !important; padding-left: 18px !important; }
+.ma-panel [class*="_messageArea__"] li { margin: 2px 0 !important; }
+.ma-panel [class*="_messageArea__"] li > * { margin-top: 0 !important; margin-bottom: 0 !important; }
+.ma-panel [class*="_messageArea__"] li::marker { color: #a78bfa; }
+.ma-panel [class*="_messageBubble__"] { line-height: 1.5; font-size: 13.5px; max-width: 88%; }
+
+/* 历史列表 */
+.ma-panel [class*="_conversationItem__"] { padding: 9px 14px; }
+.ma-panel [class*="_conversationItem__"]:hover { background: rgba(148, 163, 184, 0.08); }
+.ma-panel [class*="_conversationItemActive__"] {
+  border-left-color: #a78bfa !important;
+  background: rgba(167, 139, 250, 0.12) !important;
+}
+
+/* +新对话 / 清空全部 按钮 */
+.ma-panel [class*="_sidebarHeader__"] [class*="ag-ant-btn-primary"] {
+  background: transparent !important;
+  border: 1px solid rgba(167, 139, 250, 0.5) !important;
+  color: #c4b5fd !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+.ma-panel [class*="_sidebarHeader__"] [class*="ag-ant-btn-primary"]:hover {
+  background: rgba(167, 139, 250, 0.12) !important;
+  border-color: #a78bfa !important;
+  color: #ddd6fe !important;
+}
+.ma-panel [class*="_sidebarFooter__"] button {
+  background: transparent !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  color: #94a3b8 !important;
+  box-shadow: none !important;
+}
+.ma-panel [class*="_sidebarFooter__"] button:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.55) !important;
+  color: #f87171 !important;
+}
+
+.ma-resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: ew-resize;
+  z-index: 10;
+  transition: background 0.15s;
+}
+.ma-resize-handle:hover,
+.ma-resize-handle:active {
+  background: rgba(64, 150, 255, 0.35);
+}
+
+.ma-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.ma-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.ma-icon-btn:hover { background: rgba(148, 163, 184, 0.15); color: #e5e7eb; }
+
+/* 业务面板统一滚动条：细、低调、贴深色主题（PanelShell 内容区已自动套 .thin-scroll；
+   自己另做滚动区域时也加这个 class，别裸用浏览器默认粗滚动条）。 */
+.thin-scroll { scrollbar-width: thin; scrollbar-color: rgba(148, 163, 184, 0.32) transparent; }
+.thin-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.thin-scroll::-webkit-scrollbar-track { background: transparent; }
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.28);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.thin-scroll::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.5); background-clip: padding-box; }
+
+/* ───────────────────────── 灭火救援预案面板（.frp-*） ───────────────────────── */
+
+.frp-section { margin-bottom: 14px; }
+.frp-section-title {
+  font-size: 12px;
+  color: #8aa4d1;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.frp-row { display: flex; gap: 10px; }
+.frp-field { flex: 1; margin-bottom: 10px; }
+.frp-field label {
+  display: block;
+  font-size: 12px;
+  color: #a8bdda;
+  margin-bottom: 5px;
+}
+.frp-field select,
+.frp-field input,
+.frp-field textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(120, 170, 255, 0.25);
+  background: rgba(8, 12, 22, 0.75);
+  color: #e8edf6;
+  font-size: 13px;
+  outline: none;
+}
+.frp-field select:focus,
+.frp-field input:focus,
+.frp-field textarea:focus { border-color: #5b8cff; }
+.frp-field textarea { min-height: 56px; resize: vertical; }
+.frp-number { display: flex; align-items: center; gap: 8px; }
+.frp-number input { flex: 1; }
+.frp-number span { font-size: 12px; color: #8aa4d1; }
+.frp-actions { display: flex; gap: 8px; margin-top: 4px; }
+.frp-actions .frp-btn { flex: 1; }
+.frp-btn {
+  padding: 10px;
+  border-radius: 6px;
+  border: 0;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.frp-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.frp-btn-primary {
+  background: linear-gradient(90deg, #2a5cff, #3b74ff);
+  color: #fff;
+}
+.frp-btn-secondary {
+  background: rgba(120, 170, 255, 0.12);
+  color: #b8d0ff;
+  border: 1px solid rgba(120, 170, 255, 0.25);
+}
+.frp-btn:hover:not(:disabled) { opacity: 0.9; }
+.frp-btn-small { width: auto; padding: 6px 14px; font-size: 12px; }
+.frp-hint { font-size: 11px; color: #6a82a8; margin-top: 6px; }
+.frp-error { font-size: 12px; color: #ff7a7a; margin-top: 6px; }
+
+.frp-plan {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(8, 12, 22, 0.6);
+  border: 1px solid rgba(120, 170, 255, 0.12);
+}
+.frp-plan h3 { margin: 0 0 10px; font-size: 13px; color: #7db1ff; }
+.frp-plan-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.frp-plan-item strong {
+  min-width: 70px;
+  color: #a8bdda;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.frp-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+}
+.frp-badge-urgent { background: rgba(255, 76, 76, 0.15); color: #ff7a7a; border: 1px solid rgba(255, 76, 76, 0.3); }
+.frp-badge-high { background: rgba(255, 160, 60, 0.15); color: #ffb870; border: 1px solid rgba(255, 160, 60, 0.3); }
+.frp-badge-medium { background: rgba(255, 220, 80, 0.15); color: #ffe680; border: 1px solid rgba(255, 220, 80, 0.3); }
+.frp-badge-low { background: rgba(120, 170, 255, 0.15); color: #9fc0ff; border: 1px solid rgba(120, 170, 255, 0.3); }
+.frp-badge-signed { background: rgba(80, 220, 140, 0.15); color: #6ee7a0; border: 1px solid rgba(80, 220, 140, 0.3); }
+
+.frp-timeline { margin-top: 10px; }
+.frp-timeline-step {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.frp-timeline-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3b74ff;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.frp-timeline-step.active .frp-timeline-dot { background: #ff7a7a; box-shadow: 0 0 6px #ff7a7a; }
+.frp-timeline-text { font-size: 12px; color: #c8d6ee; line-height: 1.5; }
+.frp-timeline-step.active .frp-timeline-text { color: #ff7a7a; }
+
+.frp-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+}
+
+/* ───────────────────────── UStudio SDK Viewer / Plugin Panel ───────────────────────── */
+
+.viewerShell {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #d8dddc;
+}
+
+.viewerCanvas {
+  width: 100%;
+  height: 100%;
+}
+
+.topRight {
+  position: absolute;
+  z-index: 13;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.topRight.disabled {
+  opacity: 0.55;
+}
+
+.sceneSelect,
+.pluginToggle {
+  padding: 6px 12px;
+  border: 0.5px solid rgba(148, 163, 184, 0.42);
+  border-radius: 6px;
+  outline: none;
+  background: rgba(15, 23, 42, 0.88);
+  color: #e2e8f0;
+  font-size: 13px;
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+}
+
+.sceneSelect {
+  max-width: 260px;
+}
+
+.sceneSelect:disabled,
+.pluginToggle:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+.pluginToggle.on {
+  border-color: rgba(20, 184, 166, 0.72);
+  background: rgba(20, 184, 166, 0.2);
+  color: #ccfbf1;
+}
+
+.status {
+  position: absolute;
+  z-index: 10;
+  top: 16px;
+  left: 16px;
+  max-width: min(520px, 48vw);
+  padding: 10px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #dbeafe;
+  font-size: 13px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+.status.error {
+  color: #fecaca;
+}
+
+.status.empty {
+  color: #fde68a;
+}
+
+.statusTitle {
+  font-weight: 500;
+}
+
+.statusMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  color: #93c5fd;
+  font-size: 12px;
+}
+
+.statusProgress {
+  height: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.22);
+}
+
+.statusProgress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #38bdf8, #34d399);
+  transition: width 0.18s ease;
+}
+
+.statusProgress.indeterminate span {
+  width: 42%;
+  animation: statusProgressSweep 1.2s ease-in-out infinite;
+}
+
+@keyframes statusProgressSweep {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(260%); }
+}
+
+.sdkPanel {
+  position: absolute;
+  z-index: 14;
+  top: 56px;
+  right: 16px;
+  width: min(360px, calc(100vw - 32px));
+  max-height: calc(100vh - 80px);
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 8px;
+  background: rgba(12, 18, 28, 0.9);
+  color: #e5e7eb;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(10px);
+}
+
+.sdkPanelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.sdkPanelTitle {
+  color: #f8fafc;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sdkPanelSub {
+  margin-top: 2px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.sdkPanelIconButton {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #cbd5e1;
+  cursor: pointer;
+}
+
+.sdkPanelIconButton:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+.sdkPanelError {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: 6px;
+  background: rgba(127, 29, 29, 0.3);
+  color: #fecaca;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sdkPanelSection {
+  margin-top: 12px;
+}
+
+.sdkPanelSectionTitle {
+  margin-bottom: 8px;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sdkPanelGrid {
+  display: grid;
+  gap: 8px;
+}
+
+.sdkPanelGrid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sdkPanelList {
+  display: grid;
+  gap: 8px;
+}
+
+.sdkPanelButton {
+  min-height: 30px;
+  padding: 6px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.58);
+  color: #cbd5e1;
+  font-size: 12px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sdkPanelButton:hover {
+  border-color: rgba(20, 184, 166, 0.6);
+  color: #f8fafc;
+}
+
+.sdkPanelButton.isActive {
+  border-color: rgba(20, 184, 166, 0.72);
+  background: rgba(20, 184, 166, 0.18);
+  color: #ccfbf1;
+}
+
+.sdkPanelButton:disabled {
+  opacity: 0.56;
+  cursor: progress;
+}
+
+.sdkPanelEmpty {
+  padding: 8px 10px;
+  border: 1px dashed rgba(148, 163, 184, 0.24);
+  border-radius: 6px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.sceneCommandOverlay {
+  position: fixed;
+  z-index: 18;
+  top: 16px;
+  left: 16px;
+  display: grid;
+  min-width: 220px;
+  max-width: min(360px, calc(100vw - 32px));
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 100, 100, 0.78);
+  border-left: 4px solid #ff4c4c;
+  border-radius: 6px;
+  background: rgba(34, 14, 18, 0.88);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+  color: #fff1f1;
+  pointer-events: none;
+}
+
+.sceneCommandOverlay span {
+  color: #ff9a9a;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sceneCommandOverlay strong {
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sceneCommandOverlay p {
+  margin: 0;
+  color: #ffd3d3;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (max-width: 720px) {
+  .status {
+    max-width: calc(100vw - 32px);
+  }
+
+  .topRight {
+    left: 16px;
+    right: 16px;
+    justify-content: flex-end;
+  }
+
+  .sdkPanel {
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+}
+
+/* =====================================================================
+   3D 指挥台皮肤：地图全屏，战术卡片贴边
+   ===================================================================== */
+:root {
+  --hud-bg: #071017;
+  --hud-surface: rgba(9, 25, 33, 0.94);
+  --hud-line: rgba(143, 184, 193, 0.22);
+  --hud-teal: #50d4bd;
+  --hud-amber: #f2b85f;
+}
+
+html, body { background: var(--hud-bg); }
+body { overflow: hidden; }
+.viewerShell { background: var(--hud-bg); }
+.viewerShell::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background: linear-gradient(180deg, rgba(4, 13, 18, 0.38), transparent 22%, transparent 76%, rgba(4, 13, 18, 0.55));
+}
+.viewerBrand {
+  position: absolute;
+  z-index: 8;
+  top: 18px;
+  left: 18px;
+  display: grid;
+  gap: 3px;
+  min-width: 224px;
+  padding: 12px 15px;
+  border: 1px solid var(--hud-line);
+  border-left: 3px solid var(--hud-amber);
+  border-radius: 8px;
+  background: rgba(7, 20, 27, 0.82);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+.viewerBrand span { color: #87afa9; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; }
+.viewerBrand strong { color: #f0f8f6; font-size: 17px; font-weight: 700; }
+.viewerBrand small { color: #9bb0b0; font-size: 10px; }
+.topRight { top: 18px; right: 18px; gap: 7px; }
+.sceneSelect, .pluginToggle {
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid var(--hud-line);
+  border-radius: 7px;
+  background: rgba(7, 20, 27, 0.86);
+  color: #e5f2f0;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+}
+.sceneSelect:hover, .pluginToggle:hover:not(:disabled) { border-color: rgba(80, 212, 189, 0.58); }
+.pluginToggle.on { border-color: rgba(80, 212, 189, 0.72); background: rgba(39, 126, 111, 0.32); color: #bcf5e9; }
+.status { top: 86px; left: 18px; border-color: rgba(242, 184, 95, 0.42); border-radius: 8px; background: rgba(31, 24, 14, 0.86); color: #ffe1a7; box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24); }
+.statusMeta { color: #f2c77f; }
+.statusProgress span { background: linear-gradient(90deg, var(--hud-amber), var(--hud-teal)); }
+.sceneCommandOverlay { top: 92px; left: 18px; border-color: rgba(255, 117, 104, 0.64); border-left-color: #ff7568; border-radius: 8px; background: rgba(34, 14, 18, 0.9); }
+.pluginPanel {
+  top: 70px !important;
+  right: 18px !important;
+  width: min(320px, calc(100vw - 36px)) !important;
+  max-height: calc(100vh - 88px) !important;
+  border: 1px solid var(--hud-line) !important;
+  border-radius: 8px !important;
+  background: rgba(7, 20, 27, 0.95) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42) !important;
+}
+
+@media (max-width: 720px) {
+  .viewerBrand { top: 10px; left: 10px; min-width: 190px; padding: 9px 11px; }
+  .viewerBrand strong { font-size: 14px; }
+  .topRight { top: 10px; right: 10px; left: auto; }
+  .sceneSelect { max-width: 160px; }
+  .sceneCommandOverlay { top: 70px; left: 10px; }
+  .pluginPanel { top: 58px !important; right: 10px !important; width: calc(100vw - 20px) !important; max-height: calc(100vh - 70px) !important; }
+}

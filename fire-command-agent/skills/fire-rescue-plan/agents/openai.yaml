@@ -1,0 +1,4 @@
+interface:
+  display_name: "结构化预案与签发"
+  short_description: "汇总四类基础 Skill 结果，生成结构化预案并经人工复核进入 Word 导出与版本签发"
+  default_prompt: "Use $fire-rescue-plan to generate a reviewable fire rescue plan."

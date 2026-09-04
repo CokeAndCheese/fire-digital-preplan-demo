@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fire scene control actions",
+  "oneOf": [
+    {
+      "properties": {
+        "action": { "const": "locate_space" },
+        "input": {
+          "type": "object",
+          "properties": {
+            "sceneId": { "type": "string" },
+            "twinsInstanceId": { "type": "string" },
+            "roomId": { "type": "string" },
+            "floor": { "type": "string" },
+            "room": { "type": "string" },
+            "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+          },
+          "anyOf": [
+            { "required": ["twinsInstanceId"] },
+            { "required": ["roomId"] },
+            { "required": ["room"] }
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    },
+    {
+      "properties": {
+        "action": { "const": "set_view_mode" },
+        "input": {
+          "type": "object",
+          "properties": { "mode": { "enum": ["2D", "3D"] } },
+          "required": ["mode"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    },
+    {
+      "properties": {
+        "action": { "const": "start_simulation" },
+        "input": {
+          "type": "object",
+          "properties": {
+            "sceneId": { "type": "string" },
+            "floor": { "type": "string" },
+            "room": { "type": "string" },
+            "roomId": { "type": "string" },
+            "fireType": { "type": "string" },
+            "level": { "type": "string" },
+            "burnArea": { "type": "number", "minimum": 0 },
+            "trappedCount": { "type": "integer", "minimum": 0 }
+          },
+          "required": ["fireType"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["action", "input"]
+    }
+  ]
+}

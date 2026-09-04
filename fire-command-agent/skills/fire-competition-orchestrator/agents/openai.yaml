@@ -1,0 +1,4 @@
+interface:
+  display_name: "消防比赛全链路编排"
+  short_description: "编排消防预案、三维推演、人工复核、签发交付与比赛演示闭环"
+  default_prompt: "Use $fire-competition-orchestrator to prepare a reviewable fire-rescue competition workflow."

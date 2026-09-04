@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-08-21T15:22:36.910Z",
+  "credentialPolicy": "No App Key, token, authorization header, or raw user contact data is retained.",
+  "application": {
+    "appId": "2090387120713011202",
+    "name": "三亚消防数字预案编制闭环智能体",
+    "conversationId": "c0823208f31c4a79862e2f82ad9ce421",
+    "endpoint": "POST /uagent-service/api/agent/v1/apps/agent-chat",
+    "httpStatus": 200,
+    "streamEventCount": 1850,
+    "receiptSha256": "1c4e57c03e295151c583bdc322ff70350e73af5d329bc3a2bf66f300476aa788"
+  },
+  "case": {
+    "caseId": "CASE-20260821-USTUDIO-02",
+    "building": "五矿国际广场",
+    "floor": "8F",
+    "room": "808",
+    "fireType": "电气火灾",
+    "trappedCount": 2,
+    "burnAreaSqm": 35,
+    "sceneId": "477747327523254272",
+    "requestedBoundary": "Generate a draft only; do not sign or start 3D simulation."
+  },
+  "remoteExecution": {
+    "agents": [
+      "MultiAgent",
+      "五矿空间证据单次查询子智能体V2",
+      "火灾等级判定",
+      "消防救援助手智能体"
+    ],
+    "tools": [
+      "task",
+      "spacequery",
+      "_sub_agent_tool_calls",
+      "getSkillDetail",
+      "list_fires",
+      "get_unit_by_name",
+      "get_unit_plan"
+    ],
+    "finalStatus": "draft_ready_pending_human_review",
+    "controlledActions": {
+      "sceneOperation": "not_executed",
+      "threeDSimulation": "not_started",
+      "planSigning": "not_executed",
+      "wordExport": "not_executed"
+    }
+  },
+  "outcomes": {
+    "spaceEvidence": { "status": "failed_pending_manual_review", "detail": "空间取证失败，未重试，未补造空间结果。" },
+    "responseLevel": { "status": "completed_pending_review", "recommendedLevel": "II级", "missingEvidence": ["蔓延趋势", "突变险情"] },
+    "fireResource": { "status": "completed", "returnedRecordCount": 25, "jurisdiction": "吉阳大队", "subordinateStationCount": 7 },
+    "keyUnit": { "status": "completed", "detail": "获取重点单位详情、风险与消防系统信息。" },
+    "routeAndWater": { "status": "not_available_pending_verification", "detail": "空间取证失败，未生成精确路线、距离或 ETA。" },
+    "structuredPlan": { "status": "completed_pending_human_review", "chapterCount": 12, "pendingReviewItemCount": 8 }
+  },
+  "auditConclusion": "This receipt proves a real published-platform execution. It does not prove that every local Skill catalog entry is remotely bound; the platform's opaque binding IDs remain the source of truth."
+}

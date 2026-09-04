@@ -1,0 +1,36 @@
+{
+  "id": "response-level",
+  "packageName": "fire-response-level",
+  "name": "Ⅰ-Ⅴ级判定 Skill",
+  "shortName": "等级判定",
+  "description": "依据版本化灾情证据规则形成可解释的Ⅰ-Ⅴ级响应建议；结果不等于正式签发等级。",
+  "targetProject": "规则库与消防知识库",
+  "role": "core",
+  "order": 2,
+  "inputs": ["带来源和置信度的灾情证据包", "版本化 I-V 级规则"],
+  "output": "Ⅰ-Ⅴ级建议、计算分项、缺失/冲突证据与人工复核边界",
+  "endpointEnv": "RESPONSE_LEVEL_URL",
+  "actions": [
+    {
+      "id": "assess_response_level",
+      "name": "研判Ⅰ-Ⅴ级响应",
+      "description": "只根据完整、无冲突且可追溯的灾情证据生成等级建议；缺证据时停止在待人工复核。",
+      "requiresApproval": false,
+      "inputExample": { "incident": { "incidentId": "INC-EXAMPLE-001", "receivedAt": "2026-08-20T00:00:00+08:00", "building": "<EvidenceField>", "floor": "<EvidenceField>", "room": "<EvidenceField>", "firePartition": "<EvidenceField>", "venueType": "<EvidenceField>", "fireMaterialOrType": "<EvidenceField>", "burnAreaSqm": "<EvidenceField>", "spreadTrend": "<EvidenceField>", "trappedCount": "<EvidenceField>", "casualtyCount": "<EvidenceField>", "missingPersonCount": "<EvidenceField>", "specialHazards": "<EvidenceField>", "facilityStatus": "<EvidenceField>", "weatherConstraints": "<EvidenceField>", "roadConstraints": "<EvidenceField>" } }
+    },
+    {
+      "id": "explain_level_basis",
+      "name": "解释等级依据",
+      "description": "返回命中规则、知识来源、缺失证据和调整条件。",
+      "requiresApproval": false,
+      "inputExample": { "assessmentId": "待研判后返回" }
+    },
+    {
+      "id": "submit_level_review",
+      "name": "提交等级复核",
+      "description": "登记人工复核请求；不会自动签发正式等级或触发力量调派。",
+      "requiresApproval": true,
+      "inputExample": { "assessmentId": "待研判后返回", "reviewer": "值班指挥员" }
+    }
+  ]
+}

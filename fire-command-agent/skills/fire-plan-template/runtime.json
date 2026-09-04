@@ -1,0 +1,38 @@
+{
+  "id": "plan-template",
+  "packageName": "fire-plan-template",
+  "name": "预案模板 Skill",
+  "shortName": "预案模板",
+  "description": "按响应等级推导编制机构层级（站/大队/支队/总队），并按建筑类型二次匹配总队级模板，再从消防预案库检索模板章节结构。层级映射为业务惯例而非规范条文，恒标记待指挥员核定，不自动定稿。",
+  "targetProject": "消防预案库（知识库应用 2086971423845441537）",
+  "role": "core",
+  "order": 5,
+  "inputs": ["响应等级", "指定编制层级", "建筑类型", "地上层数", "是否地下建筑"],
+  "output": "模板层级、模板文件名、章节结构与选取依据",
+  "endpointEnv": "PLAN_TEMPLATE_KB_URL",
+  "actions": [
+    {
+      "id": "select_plan_template",
+      "name": "选取预案模板层级",
+      "description": "按响应等级推导编制机构层级，总队级再按建筑类型细分。仅做映射，不检索知识库，离线可用。",
+      "requiresApproval": false,
+      "inputExample": {
+        "responseLevel": "II",
+        "sceneType": "高层公共建筑",
+        "floorsAbove": 28,
+        "isUnderground": false
+      }
+    },
+    {
+      "id": "retrieve_template_sections",
+      "name": "检索模板章节结构",
+      "description": "从消防预案库检索该层级模板 PDF 的章节标题，并校验章节数是否与规范章节数一致。知识库不可达时显式回传缺口，不用推测章节充数。",
+      "requiresApproval": false,
+      "inputExample": {
+        "responseLevel": "II",
+        "sceneType": "高层公共建筑",
+        "floorsAbove": 28
+      }
+    }
+  ]
+}

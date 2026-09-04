@@ -1,0 +1,62 @@
+{
+  "reportVersion": "release-gates/2026-08-22",
+  "status": "BLOCKED",
+  "checkedAt": "2026-08-22T01:23:24+08:00",
+  "policy": "Failures remain failures; no offline or mock result is promoted to success.",
+  "cases": [
+    {"id":"DEMO-A-LOW-RISK","status":"blocked","reason":"Retest receipt is non_live_mode:simulation; no verified response level, force, route, water or 3D receipt."},
+    {"id":"DEMO-B-HIGH-RISE-ELECTRICAL-TRAPPED","status":"blocked","reason":"Retest receipt is non_live_mode:simulation; no verified search-first/electrical-risk/augmentation/route result."},
+    {"id":"DEMO-C-PRIMARY-ROUTE-BLOCKED","status":"blocked","reason":"Retest receipt is non_live_mode:simulation; no real blocked primary-route or backup-route receipt."}
+  ],
+  "failures": [
+    {"id":"FAIL-SPACE-QUERY","status":"covered_by_code_and_tests","evidence":"plan-orchestrator and scenario-registry tests preserve failed/pending_manual_review"},
+    {"id":"FAIL-SPACE-EMPTY","status":"covered_by_code_and_tests","evidence":"scenario registry rejects empty/unregistered targets"},
+    {"id":"FAIL-SPACE-TIMEOUT","status":"observed_in_live_run","evidence":"strategy/space bridge returned timeout or unavailable; draft retained"},
+    {"id":"FAIL-RULE-MISSING-FIELD","status":"covered_by_tests","evidence":"response-level-rules.test.ts stops at pending_manual_review"},
+    {"id":"FAIL-FORCE-API","status":"covered_by_tests","evidence":"force-route-water.test.ts preserves timeout/auth/empty failures"},
+    {"id":"FAIL-ROUTE-UNREACHABLE","status":"covered_by_tests_only","evidence":"route adapter tests exist; no real fixed-case unreachable receipt"},
+    {"id":"FAIL-USTUDIO-TIMEOUT","status":"covered_by_lifecycle_tests","evidence":"frozen-case receipt records non_live_mode:simulation and pending_manual_review"},
+    {"id":"FAIL-USTUDIO-VERSION-MISMATCH","status":"blocked","evidence":"no current live version-mismatch receipt"},
+    {"id":"FAIL-3D-ACTION","status":"covered_by_mock_tests_only","evidence":"WorkBuddy adapter/controller mock tests pass; real scene E2E remains unverified and browser still reports duplicate object registration"},
+    {"id":"FAIL-SIGN-AUTH","status":"covered_by_lifecycle_tests","evidence":"issue route requires permissionConfirmed and blocks unmet prerequisites"},
+    {"id":"FAIL-WORD-EXPORT","status":"covered_by_lifecycle_tests","evidence":"export_failed audit test and OOXML sample exist; no release archive sign-off"},
+    {"id":"FAIL-RESTART-RECOVERY","status":"covered_by_tests","evidence":"plan-persistence.test.ts restores after repository restart"},
+    {"id":"FAIL-EXTERNAL-SCENE-COLOR","status":"guarded_and_observed_live","evidence":"lib/scene-color.ts rejects invalid external colors with INVALID_EXTERNAL_SCENE_COLOR; browser observed #f953f, #37149, #d0dc8, #1f42f"}
+  ],
+  "hardBlocks": [
+    "真实三维 SDK/WebGL E2E 尚未完成；本地 WorkBuddy typecheck/test/build 已通过，但 mock 映射测试不能替代真实场景回执。",
+    "Three frozen cases have no complete non-simulation plan/evidence/force/route/water/11-step receipt.",
+    "Primary runtime binding health is blocked by unavailable knowledge-base detail authorization in the server path.",
+    "No fixed deployment address, runnable offline data package, demo environment, or completed rollback record is available.",
+    "Primary browser console emits invalid Three.js hex-color warnings during scene load; boundary guard rejects them but upstream scene data remains invalid.",
+    "Primary browser console emits repeated object registration warnings; root cause and cleanup are not yet verified."
+  ],
+  "remediationEvidence": {
+    "workbuddy": {
+      "install": "npm ci --include=optional",
+      "typecheck": "PASS",
+      "test": "PASS: 10 files / 98 tests",
+      "build": "PASS"
+    },
+    "frozenCaseRetest": {
+      "receipt": "fire-command-agent/runtime-evidence/frozen-case-retest-20260821170833.json",
+      "cases": {
+        "DEMO-A-LOW-RISK": "pending_manual_review",
+        "DEMO-B-HIGH-RISE-ELECTRICAL-TRAPPED": "pending_manual_review",
+        "DEMO-C-PRIMARY-ROUTE-BLOCKED": "pending_manual_review"
+      },
+      "commonReason": "non_live_mode:simulation"
+    },
+    "browserScreenshots": [
+      "_client_review/code-mswy4igr/output/playwright/request11-desktop.png",
+      "_client_review/code-mswy4igr/output/playwright/request11-mobile.png"
+    ],
+    "deploymentMaterials": {
+      "deploymentAddress": "PENDING",
+      "offlinePackage": "PENDING",
+      "demoRunbook": "PENDING_MANUAL_REVIEW",
+      "emergencyRunbook": "PENDING",
+      "rollbackRecord": "PENDING"
+    }
+  }
+}
