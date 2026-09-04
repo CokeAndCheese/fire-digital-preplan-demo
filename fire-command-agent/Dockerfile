@@ -22,6 +22,7 @@ COPY fire-command-agent/lib ./lib
 COPY fire-command-agent/skills ./skills
 COPY fire-command-agent/runtime-evidence ./runtime-evidence
 COPY shared /workspace/shared
+COPY baseline /workspace/baseline
 RUN npm run build
 
 FROM node:22-alpine AS runner
