@@ -30,7 +30,7 @@ ENV_MODE=$(stat -c '%a' "$PROJECT_DIR/.env")
 
 cd "$PROJECT_DIR"
 [[ -z $(git status --porcelain --untracked-files=all) ]] || die 'server checkout is dirty; refusing deployment'
-node deploy/preflight-env.mjs .env
+bash deploy/preflight-env.sh .env
 
 exec 9>"$LOCK_FILE"
 flock -x 9

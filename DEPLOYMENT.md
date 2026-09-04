@@ -24,7 +24,7 @@ sudo chown 1001:1001 data/fire
 先检查并启动应用，确认健康后再启用网关：
 
 ```bash
-node deploy/preflight-env.mjs .env
+bash deploy/preflight-env.sh .env
 sudo docker compose config
 sudo docker compose build
 sudo docker compose up -d --no-build
